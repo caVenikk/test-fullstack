@@ -20,9 +20,19 @@ class UserRepository(BaseRepository):
             query = select(User).order_by(asc(User.id))
             return list((await s.execute(query)).scalars().all())
 
+    async def admins(self) -> list[User]:
+        async with self._session() as s:
+            query = select(User).where(User.is_admin == True).order_by(asc(User.id))
+            return list((await s.execute(query)).scalars().all())
+
     async def get(self, user_id: str) -> User | None:
         async with self._session() as s:
             query = select(User).where(User.id == user_id)
+            return (await s.execute(query)).scalar()
+
+    async def get_by_username(self, username: str) -> User | None:
+        async with self._session() as s:
+            query = select(User).where(User.username == username)
             return (await s.execute(query)).scalar()
 
     async def update(self, user: User) -> User | None:

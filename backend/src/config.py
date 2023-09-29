@@ -1,5 +1,6 @@
 import os
 from dataclasses import dataclass
+from functools import lru_cache
 from pprint import pprint
 from typing import ClassVar, Optional
 
@@ -20,16 +21,18 @@ class Database:
 @dataclass
 class Telegram:
     bot_token: str
+    admin_ids: list[int]
 
 
 @dataclass
 class Config:
     database: Database | None = None
     telegram: Telegram | None = None
-    secret_key: str = None
+    base_url: str = None
     _config: ClassVar[Optional["Config"]] = None
 
     @classmethod
+    @lru_cache(maxsize=1)
     def load(cls):
         if cls._config:
             return cls._config
@@ -46,8 +49,11 @@ class Config:
                     port=os.environ["DB_PORT"],
                     name=os.environ["DB_NAME"],
                 ),
-                telegram=Telegram(bot_token=os.environ["BOT_TOKEN"]),
-                secret_key=os.environ["SECRET_KEY"],
+                telegram=Telegram(
+                    bot_token=os.environ["BOT_TOKEN"],
+                    admin_ids=list(map(int, os.environ["ADMIN_IDS"].split(","))),
+                ),
+                base_url=os.environ["BASE_URL"],
             )
         except KeyError:
             raise Exception("Environment variables do not exist")
