@@ -1,13 +1,14 @@
 import asyncio
+
 from aiogram import Dispatcher
 from loguru import logger
 
-from src.bot.loader import bot, config, dp
-from src.bot.services.users import make_user_admin
+from src.bot.handlers.callback_query import router as callback_query_router
 from src.bot.handlers.commands import router as commands_router
 from src.bot.handlers.product import router as product_router
 from src.bot.handlers.user import router as user_router
-from src.bot.handlers.callback_query import router as callback_query_router
+from src.bot.loader import bot, config, dp
+from src.bot.services.users import make_user_admin
 
 
 def on_events():

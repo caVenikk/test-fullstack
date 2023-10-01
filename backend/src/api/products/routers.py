@@ -16,10 +16,10 @@ router = APIRouter()
     response_model=ProductSchema,
 )
 async def create_product(
-    request: Request,
-    description: str = Form(...),
-    image: UploadFile = File(...),
-    crud: CRUD = Depends(CRUD),
+        request: Request,
+        description: str = Form(...),
+        image: UploadFile = File(...),
+        crud: CRUD = Depends(CRUD),
 ) -> ProductSchema:
     image_data = await image.read()
     product = Product(description=description, image=image_data)
@@ -41,8 +41,8 @@ async def get_products(request: Request, crud: CRUD = Depends(CRUD)) -> list[Pro
     response_model=ProductBaseSchema,
 )
 async def get_product(
-    request: Request,
-    product: Product = Depends(valid_product_id),
+        request: Request,
+        product: Product = Depends(valid_product_id),
 ) -> ProductSchema:
     return TypeAdapter(ProductSchema).validate_python(product)
 
@@ -52,7 +52,7 @@ async def get_product(
     responses={200: {"content": {"image/png": {}}}},
 )
 async def get_product_image(
-    request: Request,
-    product: Product = Depends(valid_product_id),
+        request: Request,
+        product: Product = Depends(valid_product_id),
 ) -> Response:
     return Response(content=product.image, media_type="image/png")

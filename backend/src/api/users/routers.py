@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends
-from fastapi import Query
 from pydantic import TypeAdapter
 from starlette.requests import Request
 from starlette.status import HTTP_200_OK
@@ -58,8 +57,8 @@ async def get_admins(request: Request, crud: CRUD = Depends(CRUD)) -> list[UserS
     status_code=HTTP_200_OK,
 )
 async def get_user(
-    request: Request,
-    user: User = Depends(valid_user_id),
+        request: Request,
+        user: User = Depends(valid_user_id),
 ) -> UserSchema:
     return TypeAdapter(UserSchema).validate_python(user)
 
@@ -70,8 +69,8 @@ async def get_user(
     status_code=HTTP_200_OK,
 )
 async def get_user_by_username(
-    request: Request,
-    user: User = Depends(valid_username),
+        request: Request,
+        user: User = Depends(valid_username),
 ) -> UserSchema:
     return TypeAdapter(UserSchema).validate_python(user)
 
@@ -82,10 +81,10 @@ async def get_user_by_username(
     status_code=HTTP_200_OK,
 )
 async def update_user(
-    request: Request,
-    user_data: UserPatchSchema,
-    user: User = Depends(valid_user_id),
-    crud: CRUD = Depends(CRUD),
+        request: Request,
+        user_data: UserPatchSchema,
+        user: User = Depends(valid_user_id),
+        crud: CRUD = Depends(CRUD),
 ) -> UserSchema:
     updated_user = User(id=user.id, **user_data.model_dump())
     updated_user = await crud.users.update(user=updated_user)
@@ -98,10 +97,10 @@ async def update_user(
     status_code=HTTP_200_OK,
 )
 async def update_user_by_username(
-    request: Request,
-    user_data: UserPatchBaseSchema,
-    user: User = Depends(valid_username),
-    crud: CRUD = Depends(CRUD),
+        request: Request,
+        user_data: UserPatchBaseSchema,
+        user: User = Depends(valid_username),
+        crud: CRUD = Depends(CRUD),
 ) -> UserSchema:
     updated_user = User(id=user.id, **user_data.model_dump())
     updated_user = await crud.users.update(user=updated_user)

@@ -4,7 +4,6 @@ from aiogram.types import CallbackQuery
 
 from src.bot.filters import AdminFilter
 from src.bot.makrups.admin_menu import AdminAction, Action as adm_Action
-from src.bot.makrups.menu import UserAction, Action as usr_Action
 from src.bot.states import Admin, Product
 from src.bot.templates import send_products
 

@@ -2,7 +2,6 @@ from sqlalchemy import select, asc, update
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from src.api.users.models import User
-from src.api.users.schemas import UserPatchSchema
 from src.repository.base_repository import BaseRepository
 
 

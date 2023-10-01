@@ -1,4 +1,4 @@
-from aiogram import Router, F
+from aiogram import Router
 from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
@@ -25,10 +25,21 @@ async def start_handler(message: Message) -> None:
     )
 
     await create_user(user_data)
-    if user_id := message.from_user.id in config.telegram.admin_ids:
+    if (user_id := message.from_user.id) in config.telegram.admin_ids:
         await make_user_admin(user_id=user_id)
 
-    await message.answer(text=f"Привет, {message.from_user.first_name}!")
+    await message.answer(
+        text=f"Привет, {message.from_user.first_name}!\nЧтобы увидеть список доступных команд, введите /help",
+    )
+
+
+@router.message(Command("help"))
+async def help_handler(message: Message) -> None:
+    text = "/help – Доступные команды\n/menu – Меню\n/products – Все доступные товары\n"
+    admin_filter = AdminFilter()
+    if await admin_filter(message=message):
+        text += "/make_admin *id/@username* – Сделать пользователя админом\n/create_product – Создать товар"
+    await message.answer(text=text)
 
 
 @router.message(Command("make_admin"), AdminFilter())

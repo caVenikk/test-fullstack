@@ -13,7 +13,7 @@ const productsStore = useProductsStore();
 const products = productsStore.products;
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .product-grid {
     display: grid;
     grid-gap: 16px;

@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.api.users.routers import router as users_router
 from src.api.products.routers import router as products_router
-
+from src.api.users.routers import router as users_router
 
 app = FastAPI(
     title="Test-fullstack",
