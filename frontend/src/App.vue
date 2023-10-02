@@ -41,7 +41,7 @@ onMounted(async () => {
     }
 
     const maxAttempts = 5;
-    const retryDelay = 1000;
+    const retryDelay = 3000;
 
     const retryFetch = async (attempt) => {
         try {
