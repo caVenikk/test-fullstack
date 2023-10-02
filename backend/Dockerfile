@@ -13,6 +13,6 @@ RUN pip3 install poetry
 RUN poetry config virtualenvs.create false
 RUN poetry install --only main
 
-COPY start.sh .
+# COPY start.sh .
 
 RUN chmod +x start.sh
