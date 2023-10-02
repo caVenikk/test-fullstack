@@ -12,7 +12,7 @@ from src.api.products.models import Product
 def create_database_async_session() -> async_sessionmaker:
     config = Config.load()
 
-    db_engine = create_async_engine(f"postgresql+asyncpg://{config.database.url}", echo=True)
+    db_engine = create_async_engine(f"postgresql+asyncpg://{config.database.url}", echo=False)
 
     async_session = async_sessionmaker(db_engine, expire_on_commit=False)
     return async_session

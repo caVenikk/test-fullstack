@@ -5,7 +5,6 @@ services:
     image: test-backend
     build: ./backend
     command: ./start.sh
-    #      sh -c "uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload && python3 src/bot/main.py"
     volumes:
       - ./backend:/app
     ports:
@@ -13,13 +12,13 @@ services:
     working_dir: /app
     restart: on-failure
     depends_on:
-      migration:
+      test-migration:
         condition: service_completed_successfully
     env_file:
       - ./.env
 
-  postgres:
-    container_name: postgres
+  test-postgres:
+    container_name: test-postgres
     image: postgres
     restart: on-failure
     env_file:
@@ -35,14 +34,14 @@ services:
       timeout: 5s
       retries: 5
 
-  migration:
-    container_name: migration
+  test-migration:
+    container_name: test-migration
     image: test-backend
     command: alembic upgrade head
     volumes:
       - ./backend:/app
     depends_on:
-      postgres:
+      test-postgres:
         condition: service_healthy
     env_file:
       - ./.env
@@ -62,113 +61,3 @@ services:
     stdin_open: true
     tty: true
     restart: on-failure
-
-
-
-#  api:
-#    build:
-#      context: ./shop-api/
-#    container_name: shop-api-container
-#    image: shop-api-image:0.1.0
-#    env_file:
-#      - .env
-#    environment:
-#      DB_HOST: "postgresql"
-#    volumes:
-#      - ./shop-api/images:/shop-api/images
-#    networks:
-#      - shop
-#    links:
-#      - bot
-#    ports:
-#      - "8080:8000"
-#    depends_on:
-#      - postgresql
-#    command: >
-#      sh -c "alembic upgrade head && uvicorn src.api.app:app --port 8000 --host 0.0.0.0 --log-level debug"
-#    restart: unless-stopped
-#
-#  webapp:
-#    container_name: shop-webapp-container
-#    build:
-#      context: ./shop-webapp/
-#    command: >
-#      sh -c "npx vite build"
-#    volumes:
-#      - ./shop-webapp/dist/:/app/dist:rw
-#    env_file:
-#      - .env
-#    networks:
-#      - shop
-#
-#  bot:
-#    container_name: shop-bot-container
-#    image: shop-bot-image:0.1.0
-#    build:
-#      context: ./shop-bot/
-#    command: >
-#      sh -c "python -m bot"
-#    env_file:
-#      - .env
-#    networks:
-#      - shop
-#    ports:
-#      - "8888:8888"
-#    depends_on:
-#      - postgresql
-#    restart: unless-stopped
-#
-#  postgresql:
-#    image: postgres:15.1
-#    container_name: shop-database-container
-#    ports:
-#      - "5432:5432"
-#    environment:
-#      POSTGRES_DB: ${DB_NAME}
-#      POSTGRES_USER: ${DB_USER}
-#      POSTGRES_PASSWORD: ${DB_PASSWORD}
-#      PGDATA: "/var/lib/postgresql/data/pgdata"
-#    command:
-#      - "postgres"
-#      - "-c"
-#      - "max_connections=30"
-#      - "-c"
-#      - "shared_buffers=256MB"
-#      - "-c"
-#      - "work_mem=64MB"
-#      - "-c"
-#      - "maintenance_work_mem=128MB"
-#      - "-c"
-#      - "max_prepared_transactions=30"
-#      - "-c"
-#      - "random_page_cost=1.7"
-#      - "-c"
-#      - "temp_file_limit=1GB"
-#      - "-c"
-#      - "log_min_error_statement=INFO"
-#      - "-c"
-#      - "log_min_messages=FATAL"
-#      - "-c"
-#      - "log_statement=none"
-#      - "-c"
-#      - "log_destination=stderr"
-#    healthcheck:
-#      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
-#      interval: 5s
-#      timeout: 5s
-#      retries: 5
-#      start_period: 7s
-#    restart: always
-#    volumes:
-#      - postgresql-data-volume:/var/lib/postgresql/data
-#    networks:
-#      - shop
-#
-#networks:
-#  shop:
-#    driver: bridge
-#    external:
-#      name: ${CONTAINER_NETWORK}
-#volumes:
-#  postgresql-data-volume:
-
